@@ -257,6 +257,15 @@
       // Clear input
       messageInput.value = '';
       
+      // Check if the last message was the same
+      const lastMessage = chatMessages.lastElementChild;
+      if (lastMessage && lastMessage.classList.contains('user-message')) {
+        const lastMessageContent = lastMessage.querySelector('.message-content').textContent;
+        if (lastMessageContent === message) {
+          return; // Don't send duplicate message
+        }
+      }
+      
       // Add current message
       addMessage(message, 'user', 'Just now');
       scrollToBottom();
