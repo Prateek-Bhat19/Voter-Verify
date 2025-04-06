@@ -20,7 +20,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['https://voter-verify-backend-ry3f.onrender.com', 'http://localhost:3000', 'https://voter-verify-face-ofgu.onrender.com'],
+  origin: ['https://voter-verify.onrender.com', 'http://localhost:3000', 'http://localhost:8080'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
@@ -32,8 +32,12 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Static files - moved before API routes
-app.use(express.static(path.join(__dirname, '../public')));
+// Serve static files
+app.use(express.static('public'));
+app.use('/css', express.static(path.join(__dirname, '../public/css')));
+app.use('/js', express.static(path.join(__dirname, '../public/js')));
+app.use('/img', express.static(path.join(__dirname, '../public/img')));
+app.use('/models', express.static(path.join(__dirname, '../public/models')));
 
 // Import routes
 const authRoutes = require("./routes/authRoutes");
@@ -97,9 +101,9 @@ app.get('/health', (req, res) => {
   }
 });
 
-// Default route
+// Serve index.html for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Error handling middleware
