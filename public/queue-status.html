@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Queue Status</title>
+  <link rel="stylesheet" href="css/output.css">
+  
+</head>
+<body class="flex flex-col bg-gradient-to-r to-blue-200 min-h-scren">
+  <header class="w-full bg-[#160C56] shadow-sm py-4 px-6">
+    <div class="mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- Logo/Brand -->
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12">
+                <img src="img/Emblem_of_India.svg" alt="emblem" class="h-full w-full text-white filter invert">
+                </div>
+                <div class="text-3xl font-bold text-white">
+                Election Commission
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation - Only visible on md screens and up -->
+            <nav class="hidden md:block">
+                <ul class="flex gap-8">
+                    <li>
+                        <a 
+                            href="index.html#home" 
+                            class="header-text"
+                        >
+                            Home
+                        </a>
+                    </li>
+                  
+                    <li>
+                        <a 
+                            href="index.html#contact" 
+                            class="header-text"
+                        >
+                            Contact
+                        </a>
+                    </li>
+                    
+                </ul>
+            </nav>
+            
+            <!-- Mobile menu button - Only visible on small screens -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Sidebar - Hidden by default -->
+<div id="mobile-sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-50 shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out z-50">
+    <div class=" p-6">
+        <!-- Close button -->
+        <button id="sidebar-close" class="absolute top-4 right-4 text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+                    <!-- Sidebar Logo -->
+        <div class="text-2xl font-semibold text-gray-800 mb-8">
+            Election Commission
+        </div>
+        
+        
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul class="space-y-4">
+                <li>
+                    <a 
+                        href="index.html#home" 
+                        class="mobile-header"
+                    >
+                        Home
+                    </a>
+                </li>
+                
+                <li>
+                    <a 
+                        href="/index.html#contact" 
+                        class="mobile-header"
+                    >
+                        Contact
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+<div class="flex flex-col flex-grow max-w-3xl mx-auto bg-white p-5 rounded-lg shadow-md my-8">
+  <h1 class="text-center text-2xl font-bold mb-6">Queue Status</h1>
+  
+  <div class="mb-4">
+    <label for="slot-id-input" class="block mb-2 font-medium">Enter Slot ID:</label>
+    <input 
+      type="text" 
+      id="slot-id-input" 
+      placeholder="Paste Slot ID here" 
+      class="w-full p-2.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+  </div>
+  
+  <button 
+    id="view-queue" 
+    class="bg-blue-600 hover:bg-blue-800 text-white py-2 px-4 rounded w-full mb-5 transition duration-200"
+  >
+    View Queue
+  </button>
+  
+  <div 
+    id="queue-status-container" 
+    class="mt-4 p-4 border border-gray-300 rounded bg-blue-50 min-h-24"
+  >
+    <p class="text-gray-600">Queue status will be displayed here.</p>
+  </div>
+  
+  <button 
+    id="back-to-slots" 
+    class="mt-5 bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded w-full transition duration-200"
+  >
+    Back to Slots
+  </button>
+</div>
+
+<footer class="bg-[#160C56] mt-19 text-white text-center py-4">
+  <p>&copy; 2024 E-Voting System. All rights reserved.</p>
+</footer>
+
+<script src="js/header-functionality.js"></script>
+  <script>
+    async function fetchQueueStatus(slotId) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found in localStorage");
+          showMessage("Please log in to view queue status", "error");
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+          return;
+        }
+
+        // Debug: Log all stored user data
+        console.log("Stored user data:", {
+          token: localStorage.getItem("token"),
+          userId: localStorage.getItem("userId"),
+          voterId: localStorage.getItem("voterId"),
+          phoneNumber: localStorage.getItem("phoneNumber"),
+          isAdmin: localStorage.getItem("isAdmin")
+        });
+
+        const response = await fetch(`/api/slots/queue/${slotId}`, {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        console.log("Queue status response status:", response.status);
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          showMessage("Session expired. Please log in again.", "error");
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+          return;
+        }
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error response:", errorText);
+          throw new Error(`Failed to fetch queue status: ${response.statusText}`);
+        }
+
+        const queueData = await response.json();
+        console.log("Raw queue data:", queueData);
+
+        // Transform the data to match expected structure
+        const transformedData = {
+          startTime: queueData.slot?.startTime || queueData.startTime || 'Not available',
+          endTime: queueData.slot?.endTime || queueData.endTime || 'Not available',
+          bookedCount: queueData.bookedCount || queueData.totalBooked || 0,
+          currentToken: queueData.currentToken || queueData.token || 'Not started',
+          estimatedWait: queueData.estimatedWait || queueData.waitTime || 'Calculating...',
+          yourPosition: queueData.position || queueData.yourPosition || null,
+          currentVoter: queueData.currentVoter || queueData.currentUserId,
+          nextVoter: queueData.nextVoter || queueData.nextUserId
+        };
+
+        console.log("Transformed queue data:", transformedData);
+        displayQueueStatus(transformedData);
+      } catch (error) {
+        console.error("Error fetching queue status:", error);
+        const container = document.getElementById("queue-status-container");
+        container.innerHTML = `
+          <div class="text-red-500 p-4">
+            <p>Error: ${error.message}</p>
+            <p>Please try again later or contact support.</p>
+          </div>
+        `;
+      }
+    }
+
+    function displayQueueStatus(queueData) {
+      const container = document.getElementById("queue-status-container");
+      const userId = localStorage.getItem("userId");
+      
+      console.log("Displaying queue data:", queueData);
+      
+      // Format time slot
+      const formatTimeSlot = (startTime, endTime) => {
+        if (!startTime || !endTime || startTime === 'Not available' || endTime === 'Not available') {
+          return 'Not available';
+        }
+        return `${startTime} - ${endTime}`;
+      };
+
+      // Format estimated wait time
+      const formatWaitTime = (waitTime) => {
+        if (!waitTime || waitTime === 'Calculating...') return 'Calculating...';
+        return typeof waitTime === 'number' ? `${waitTime} minutes` : waitTime;
+      };
+
+      // Format position
+      const formatPosition = (position) => {
+        if (!position) return 'Not in queue';
+        return `#${position}`;
+      };
+
+      // Format current token
+      const formatCurrentToken = (token) => {
+        if (!token || token === 'Not started') return 'Not started';
+        return token;
+      };
+
+      // Format booked count
+      const formatBookedCount = (count) => {
+        if (count === undefined || count === null) return '0';
+        return count.toString();
+      };
+
+      container.innerHTML = `
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-center mb-4">Queue Status for Slot</h3>
+          
+          
+            
+            <div class="bg-white p-4 rounded shadow">
+              <p class="font-semibold text-gray-700">Total Booked</p>
+              <p class="text-lg">${formatBookedCount(queueData.bookedCount)}</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded shadow">
+              <p class="font-semibold text-gray-700">Current Token</p>
+              <p class="text-lg">${formatCurrentToken(queueData.currentToken)}</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded shadow">
+              <p class="font-semibold text-gray-700">Estimated Wait</p>
+              <p class="text-lg">${formatWaitTime(queueData.estimatedWait)}</p>
+            </div>
+          </div>
+          
+          
+
+          ${queueData.currentVoter === userId ? `
+            <div class="bg-green-100 p-4 rounded mt-4">
+              <p class="font-semibold text-green-800">Your Turn</p>
+              <p class="text-green-700">It's your turn to vote! Please proceed to the voting booth.</p>
+            </div>
+          ` : queueData.nextVoter === userId ? `
+            <div class="bg-yellow-100 p-4 rounded mt-4">
+              <p class="font-semibold text-yellow-800">Next in Line</p>
+              <p class="text-yellow-700">You are next in line. Please be ready.</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // Add event listener for view queue button
+    document.getElementById("view-queue").addEventListener("click", () => {
+      const slotId = document.getElementById("slot-id-input").value.trim();
+      if (!slotId) {
+        showMessage("Please enter a slot ID", "error");
+        return;
+      }
+      fetchQueueStatus(slotId);
+    });
+
+    // Add event listener for back to slots button
+    document.getElementById("back-to-slots").addEventListener("click", () => {
+      window.location.href = "time-slot.html";
+    });
+
+    // Initialize when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showMessage("Please log in to view queue status", "error");
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+        return;
+      }
+    });
+
+    // Add paste functionality to the input field
+    document.getElementById("slot-id-input").addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+      document.getElementById("slot-id-input").value = text;
+    });
+  </script>
+</body>
+</html>

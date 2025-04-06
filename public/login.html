@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voter Login</title>
+  <link rel="stylesheet" href="css/output.css">
+</head>
+<body class="bg-gradient-to-r from-slate-300 to-sky-200 min-h-screen flex flex-col">
+  <header class="w-full bg-[#160C56] shadow-sm py-4 px-6">
+    <div class="mx-auto">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <span class="text-white text-xl font-bold">VerifyVoter</span>
+        </div>
+        <nav>
+          <ul class="flex space-x-6 text-white">
+            <li><a href="index.html#home" class="hover:text-sky-300">Home</a></li>
+            <li><a href="admin-login.html" class="hover:text-sky-300">Admin Login</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center p-6">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div class="flex justify-center mb-4">
+        <img src="img/Emblem_of_India.svg" alt="Emblem of India" class="h-16">
+      </div>
+      <h2 class="text-2xl font-bold mb-6 text-center text-[#160C56]">Voter Login</h2>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit" 
+          class="w-full bg-[#160C56] hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+          Login
+        </button>
+      </form>
+      <div class="mt-4 text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account? <a href="signup.html" class="text-blue-600 hover:underline">Sign up</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-[#160C56] text-white text-center py-4">
+    <p>&copy; 2024 E-Voting System. All rights reserved.</p>
+  </footer>
+
+  <!-- ✅ Load JavaScript after DOM -->
+  <script src="js/login.js"></script>
+</body>
+</html>

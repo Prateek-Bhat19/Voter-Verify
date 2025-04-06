@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Voting Chat Support</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+  <style>
+    body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom, #0A2540, #14467C);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 900px;
+  width: 100%;
+  padding: 20px;
+}
+
+.chat-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  border: 2px solid #14467C;
+}
+
+.chat-header {
+  background: linear-gradient(to right, #0A2540, #14467C);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.chat-header img {
+  height: 40px;
+  width: 40px;
+  filter: invert(1);
+}
+
+.chat-header p {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f0f5ff;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  margin-bottom: 15px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: #4F8CCF;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 18px 18px 0 18px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.system-message {
+  align-self: flex-start;
+  background: #E3F2FD;
+  color: #0A2540;
+  padding: 12px 18px;
+  border-radius: 18px 18px 18px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.message-time {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.typing-indicator {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9rem;
+  padding: 10px;
+  display: none;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 2px solid #ddd;
+  background: white;
+  padding: 15px;
+  align-items: center;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid #4F8CCF;
+  border-radius: 25px;
+  outline: none;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.chat-input input:focus {
+  border-color: #0A2540;
+  box-shadow: 0 0 5px rgba(10, 37, 64, 0.5);
+}
+
+.chat-input button {
+  background: linear-gradient(to right, #4F8CCF, #0A2540);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 10px;
+  transition: 0.3s;
+}
+
+.chat-input button:hover {
+  background: linear-gradient(to right, #66a3d2, #14467C);
+  transform: scale(1.05);
+}
+
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="chat-container">
+      <div class="chat-header">
+        <img src="img/Emblem_of_India.svg" alt="Emblem of India">
+        <div>
+          <h2>E-Voting Chat Support</h2>
+          <p>We're here to help you with any questions</p>
+        </div>
+      </div>
+      
+      <div class="chat-messages" id="chat-messages">
+        <div class="message system-message">
+          <div class="message-content">Hello! I'm your voting assistant. How can I help you with the e-voting process today?</div>
+          <div class="message-time">Just now</div>
+        </div>
+      </div>
+      
+      <div class="typing-indicator" id="typing-indicator">
+        Assistant is typing...
+      </div>
+      
+      <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
+        <button id="send-button">
+          <i class="bi bi-send"></i> Send
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const typingIndicator = document.getElementById('typing-indicator');
+    
+    // Get user details from localStorage
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    
+    // Generate a room ID - either user specific or guest
+    const roomId = userId ? `user_${userId}` : `guest_${Date.now()}`;
+    
+    console.log('Connecting to socket.io...');
+    
+    // Connect to Socket.io
+    const socket = io();
+    
+    // Join room
+    socket.emit('joinRoom', roomId);
+    console.log('Joined chat room:', roomId);
+    
+    // Load previous messages
+    socket.on('previousMessages', (messages) => {
+      console.log('Received previous messages:', messages);
+      chatMessages.innerHTML = ''; // Clear default message
+      
+      if (messages.length === 0) {
+        // Add welcome message if no previous messages
+        addMessage("Hello! I'm your voting assistant. How can I help you with the e-voting process today?", 'system');
+      } else {
+        // Display previous messages
+        messages.forEach(msg => {
+          addMessage(msg.text, msg.sender, new Date(msg.createdAt).toLocaleTimeString());
+        });
+      }
+      
+      // Scroll to bottom
+      scrollToBottom();
+    });
+    
+    // Listen for new messages
+    socket.on('newMessage', (message) => {
+      console.log('Received new message:', message);
+      addMessage(message.text, message.sender, 'Just now');
+      scrollToBottom();
+    });
+    
+    // Handle errors
+    socket.on('error', (error) => {
+      console.error('Socket error:', error);
+      addMessage('Sorry, there was an error with the chat service.', 'system', 'Just now');
+    });
+    
+    // Send message
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+    
+    function sendMessage() {
+      const message = messageInput.value.trim();
+      
+      if (!message) return;
+      
+      // Clear input
+      messageInput.value = '';
+      
+      // Add message to UI
+      addMessage(message, 'user', 'Just now');
+      scrollToBottom();
+      
+      // Show typing indicator
+      typingIndicator.style.display = 'block';
+      
+      console.log('Sending message to server:', message);
+      
+      // Send to server via API
+      fetch('/api/chatbot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          message,
+          userId,
+          roomId
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Response from chatbot API:', data);
+        // Hide typing indicator
+        typingIndicator.style.display = 'none';
+        
+        if (data.error) {
+          addMessage('Sorry, I encountered an error. Please try again later.', 'system', 'Just now');
+        }
+        
+        // The socket will handle displaying the message
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+        typingIndicator.style.display = 'none';
+        addMessage('Sorry, I encountered an error. Please try again later.', 'system', 'Just now');
+      });
+      
+      // Also emit message to socket (this ensures real-time updates)
+      socket.emit('chatMessage', {
+        userId: userId || null,
+        room: roomId,
+        text: message,
+        sender: 'user'
+      });
+    }
+    
+    function addMessage(text, sender, time = 'Just now') {
+      console.log('Adding message to UI:', { text, sender, time });
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.textContent = text;
+      
+      const timeDiv = document.createElement('div');
+      timeDiv.className = 'message-time';
+      timeDiv.textContent = time;
+      
+      messageDiv.appendChild(contentDiv);
+      messageDiv.appendChild(timeDiv);
+      
+      chatMessages.appendChild(messageDiv);
+    }
+    
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  </script>
+</body>
+</html> 

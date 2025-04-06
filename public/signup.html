@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signup</title>
+  <link rel="stylesheet" href="css/output.css">
+</head>
+<body class="flex flex-col bg-gradient-to-r from-slate-100 to-blue-200 min-h-screen">
+
+  <header class="w-full bg-[#160C56] shadow-sm py-4 px-6">
+    <div class="mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- Logo/Brand -->
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12">
+                <img src="img/Emblem_of_India.svg" alt="emblem" class="h-full w-full text-white filter invert">
+                </div>
+                <div class="text-3xl font-bold text-white">
+                Election Commission
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation - Only visible on md screens and up -->
+            <nav class="hidden md:block">
+                <ul class="flex gap-8">
+                    <li>
+                        <a 
+                            href="#" 
+                            class="header-text"
+                        >
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="#" 
+                            class="header-text"
+                        >
+                            About
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="#" 
+                            class="header-text"
+                        >
+                            Services
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="#" 
+                            class="header-text"
+                        >
+                            Contact
+                        </a>
+                    </li>
+                    
+                </ul>
+            </nav>
+            
+            <!-- Mobile menu button - Only visible on small screens -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Sidebar - Hidden by default -->
+<div id="mobile-sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-50 shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out z-50">
+    <div class=" p-6">
+        <!-- Close button -->
+        <button id="sidebar-close" class="absolute top-4 right-4 text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+                    <!-- Sidebar Logo -->
+        <div class="text-2xl font-semibold text-gray-800 mb-8">
+            Election Commission
+        </div>
+        
+        
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul class="space-y-4">
+                <li>
+                    <a 
+                        href="index.html#home" 
+                        class="mobile-header"
+                    >
+                        Home
+                    </a>
+                </li>
+                
+                <li>
+                    <a 
+                        href="/index.html#contact" 
+                        class="mobile-header"
+                    >
+                        Contact
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+  <div class="container mx-auto mt-9 mb-9 px-4 py-8 max-w-lg bg-white rounded-2xl shadow-lg">
+    <!-- Signup Form -->
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Signup</h1>
+  
+    <form id="signup-form" class="flex flex-col space-y-4">
+      <input 
+        type="text" 
+        id="name" 
+        placeholder="Full Name" 
+        required 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <input 
+        type="email" 
+        id="email" 
+        placeholder="Email" 
+        required 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="Password" 
+        required 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <input 
+        type="text" 
+        id="adharNumber" 
+        placeholder="Aadhar Number" 
+        required 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <input 
+        type="text" 
+        id="voterId" 
+        placeholder="Voter ID" 
+        required 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <input 
+        type="text" 
+        id="phoneNumber" 
+        placeholder="Phone Number (+91...)" 
+        required 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <button 
+        type="submit" 
+        id="signup-button" 
+        class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+      >
+        Signup
+      </button>
+    </form>
+  
+    <!-- OTP Verification Section -->
+    <div id="verify-otp-section" class="hidden mt-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Verify Your Phone</h2>
+      <p id="phone-text" class="text-gray-600 mb-4"></p>
+      <input 
+        type="text" 
+        id="final-otp" 
+        placeholder="Enter OTP" 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+      >
+      <button 
+        id="continue-btn" 
+        class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300"
+      >
+        Verify OTP
+      </button>
+    </div>
+  </div>
+
+  <footer class="bg-[#160C56] text-white text-center py-4">
+    <p>&copy; 2025 E-Voting System. All rights reserved.</p>
+  </footer>
+  <script src="js/header-functionality.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const signupForm = document.getElementById("signup-form");
+      
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const adharNumber = document.getElementById("adharNumber").value.trim();
+        const voterId = document.getElementById("voterId").value.trim();
+        const phoneNumber = document.getElementById("phoneNumber").value.trim();
+        
+        if (!name || !email || !password || !adharNumber || !voterId || !phoneNumber) {
+          alert("Please fill in all required fields.");
+          return;
+        }
+        
+        try {
+          // Create the user account
+          const response = await fetch("/api/auth/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password, adharNumber, phoneNumber, voterId })
+          });
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Store user data in localStorage
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('phoneNumber', phoneNumber);
+            localStorage.setItem('isAdmin', 'false');
+            
+            // Redirect to login page
+            window.location.href = "/login.html";
+          } else {
+            alert("Signup failed: " + (data.error || "Unknown error"));
+          }
+        } catch (error) {
+          console.error("Signup error:", error);
+          alert("Signup error: " + error.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

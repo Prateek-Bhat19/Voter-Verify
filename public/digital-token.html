@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Token</title>
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> -->
+   <link rel="stylesheet" href="css/output.css">
+
+</head>
+<body class="flex flex-col bg-gradient-to-r from-slate-100 to-blue-200 min-h-screen">
+  <header class="w-full bg-[#160C56] shadow-sm py-4 px-6">
+    <div class="mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- Logo/Brand -->
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12">
+                <img src="img/Emblem_of_India.svg" alt="emblem" class="h-full w-full text-white filter invert">
+                </div>
+                <div class="text-3xl font-bold text-white">
+                Election Commission
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation - Only visible on md screens and up -->
+            <nav class="hidden md:block">
+                <ul class="flex gap-8">
+                    <li>
+                        <a 
+                            href="index.html#home" 
+                            class="header-text"
+                        >
+                            Home
+                        </a>
+                    </li>
+                  
+                    <li>
+                        <a 
+                            href="index.html#contact" 
+                            class="header-text"
+                        >
+                            Contact
+                        </a>
+                    </li>
+                    
+                </ul>
+            </nav>
+            
+            <!-- Mobile menu button - Only visible on small screens -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Sidebar - Hidden by default -->
+<div id="mobile-sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-50 shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out z-50">
+    <div class=" p-6">
+        <!-- Close button -->
+        <button id="sidebar-close" class="absolute top-4 right-4 text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+                    <!-- Sidebar Logo -->
+        <div class="text-2xl font-semibold text-gray-800 mb-8">
+            Election Commission
+        </div>
+        
+        
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul class="space-y-4">
+                <li>
+                    <a 
+                        href="index.html#home" 
+                        class="mobile-header"
+                    >
+                        Home
+                    </a>
+                </li>
+                
+                <li>
+                    <a 
+                        href="/index.html#contact" 
+                        class="mobile-header"
+                    >
+                        Contact
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+  <div class="mb-auto mx-auto bg-white p-6 rounded-xl shadow-lg text-center mt-10">
+    <div class="flex justify-center mb-4">
+      <img src="img/token-svgrepo-com.svg" alt="Digital Token" class="h-12 w-12">
+    </div>
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">Your Digital Voting Token</h2>
+    <p class="text-gray-600 mb-4">This QR code is your unique digital token. Please download it and bring it to the polling station.</p>
+
+    <!-- Loading Spinner -->
+    <div id="loading-container" class="text-center">
+        <div class="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
+        <p class="text-gray-600 mt-2">Generating your digital token...</p>
+    </div>
+    
+    <!-- Error Message -->
+    <div id="error-container" class="hidden bg-red-100 text-red-700 p-3 rounded-lg mt-4">
+        <p id="error-message">An error occurred while generating your digital token.</p>
+        <button class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300" onclick="generateToken()">Try Again</button>
+    </div>
+
+    <!-- QR Code Container -->
+    <div id="qr-container" class="flex flex-col justify-center p-4 border border-gray-300 rounded-lg mb-4 hidden">
+        <p class="text-center text-gray-700">Digital Token Generated:</p>
+        <img id="qr-code" class="w-50 h-50 mx-auto" alt="Digital Token QR Code" />
+    </div>
+    
+    <!-- Voter Details -->
+    <div class="hidden" id="voter-details">
+        <!-- Voter details will be populated dynamically -->
+    </div>
+    
+    <!-- Download Button -->
+    <button onclick="downloadPDF()" id="download-btn" class="hidden bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300">
+        Download PDF
+    </button>
+</div>
+
+<footer class="bg-[#160C56] text-white text-center py-4">
+  <p>&copy; 2024 E-Voting System. All rights reserved.</p>
+</footer>
+<script src="js/header-functionality.js"></script>
+
+  <script>
+    // Helper function to display error messages
+    function showError(message) {
+      document.getElementById("loading-container").classList.add("hidden");
+      document.getElementById("error-container").classList.remove("hidden");
+      document.getElementById("error-message").textContent = message || "An error occurred. Please try again.";
+    }
+
+    // Helper function to display the QR code
+    function showQRCode(tokenData, userData) {
+      document.getElementById("loading-container").classList.add("hidden");
+      document.getElementById("error-container").classList.add("hidden");
+      document.getElementById("qr-container").classList.remove("hidden");
+      document.getElementById("voter-details").classList.remove("hidden");
+      document.getElementById("download-btn").classList.remove("hidden");
+      
+      console.log('Token data received:', tokenData);
+      
+      // Set QR code image using the URL directly from the backend
+      const qrImg = document.getElementById("qr-code");
+      
+      // Check if we have a QR code URL from the backend
+      if (tokenData && tokenData.qrCodeUrl) {
+        console.log('Using QR code URL from backend:', tokenData.qrCodeUrl);
+        qrImg.src = tokenData.qrCodeUrl;
+      } else {
+        console.log('No QR code URL in response, generating one locally');
+        // Fallback to generating QR code locally
+        const qrData = {
+          token: tokenData.token,
+          userId: userData._id,
+          voterId: userData.voterId,
+          name: userData.name,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Convert data to string and encode it
+        const qrString = JSON.stringify(qrData);
+        const encodedData = encodeURIComponent(qrString);
+        
+        // Create QR code URL using a QR code generator service
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedData}`;
+        qrImg.src = qrCodeUrl;
+      }
+      
+      qrImg.alt = "Digital Token for " + (userData?.name || "Voter");
+      
+      // Add event listener for QR code image loading
+      qrImg.onload = function() {
+        console.log("QR code image loaded successfully");
+      };
+      
+      qrImg.onerror = function() {
+        console.error("Error loading QR code image");
+        showError("Failed to load QR code image. Please try again.");
+      };
+      
+      // Set voter details
+      const voterDetailsElement = document.getElementById("voter-details");
+      if (userData) {
+        // Format time slot information
+        let timeSlotText = 'Not Booked';
+        if (userData.timeSlot) {
+          try {
+            // Parse the date string and format it
+            const date = new Date(userData.timeSlot.date);
+            if (!isNaN(date.getTime())) { // Check if date is valid
+              const formattedDate = date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+              const startTime = userData.timeSlot.startTime || 'N/A';
+              const endTime = userData.timeSlot.endTime || 'N/A';
+              timeSlotText = `${formattedDate} from ${startTime} to ${endTime}`;
+            } else {
+              console.error('Invalid date:', userData.timeSlot.date);
+              timeSlotText = 'Not Booked';
+            }
+          } catch (error) {
+            console.error('Error formatting date:', error);
+            timeSlotText = 'Not Booked';
+          }
+        }
+        
+        voterDetailsElement.innerHTML = `
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h5 class="text-lg font-semibold mb-3">Voter Information</h5>
+            <div class="grid grid-cols-2 gap-2 text-left">
+              <div class="font-medium">Name:</div>
+              <div>${userData.name || 'N/A'}</div>
+              <div class="font-medium">Voter ID:</div>
+              <div>${userData.voterId || userData._id || 'N/A'}</div>
+              <div class="font-medium">Phone:</div>
+              <div>${userData.phoneNumber || 'N/A'}</div>
+              <div class="font-medium">Time Slot:</div>
+              <div>${timeSlotText}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    async function generateToken() {
+      try {
+        console.log('Starting digital token generation process...');
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No authentication token found in localStorage');
+          showError('Please log in to generate a token');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+          return;
+        }
+        console.log('Authentication token found');
+
+        // Show loading state
+        document.getElementById('loading-container').classList.remove('hidden');
+        document.getElementById('error-container').classList.add('hidden');
+        document.getElementById('qr-container').classList.add('hidden');
+        document.getElementById('voter-details').classList.add('hidden');
+        document.getElementById('download-btn').classList.add('hidden');
+
+        // Fetch user profile
+        console.log('Fetching user profile...');
+        const response = await fetch('/api/user/profile', {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        console.log('Profile response status:', response.status);
+        console.log('Profile response headers:', Object.fromEntries([...response.headers]));
+
+        if (response.status === 401) {
+          console.error('Authentication failed (401) when fetching profile');
+          localStorage.removeItem('token');
+          showError('Session expired. Please log in again.');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+          return;
+        }
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error fetching profile. Status:', response.status, 'Response:', errorText);
+          try {
+            const errorData = JSON.parse(errorText);
+            throw new Error(errorData.message || errorData.error || 'Failed to fetch user profile');
+          } catch (e) {
+            throw new Error('Failed to fetch user profile: ' + response.status);
+          }
+        }
+
+        const userData = await response.json();
+        console.log('User profile data received:', userData);
+        console.log('User has time slot:', userData.timeSlot ? 'Yes' : 'No');
+
+        // Generate digital token
+        console.log('Requesting digital token generation...');
+        const tokenResponse = await fetch('/api/digital-token/generate', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        console.log('Token generation response status:', tokenResponse.status);
+        console.log('Token generation response headers:', Object.fromEntries([...tokenResponse.headers]));
+
+        if (tokenResponse.status === 401) {
+          console.error('Authentication failed (401) when generating token');
+          localStorage.removeItem('token');
+          showError('Session expired. Please log in again.');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+          return;
+        }
+
+        if (!tokenResponse.ok) {
+          const errorText = await tokenResponse.text();
+          console.error('Error generating token. Status:', tokenResponse.status, 'Response:', errorText);
+          try {
+            const errorData = JSON.parse(errorText);
+            if (errorData.redirect) {
+              console.log('Redirect instruction received:', errorData.redirect);
+              showError(errorData.error || 'You need to book a time slot first');
+              setTimeout(() => {
+                window.location.href = errorData.redirect;
+              }, 2000);
+              return;
+            }
+            throw new Error(errorData.message || errorData.error || 'Failed to generate token');
+          } catch (e) {
+            throw new Error('Failed to generate token: ' + tokenResponse.status);
+          }
+        }
+
+        const tokenData = await tokenResponse.json();
+        console.log('Generated token data:', tokenData);
+        console.log('QR code URL received:', tokenData.qrCodeUrl ? 'Yes' : 'No');
+
+        // Display QR code and user info
+        showQRCode(tokenData, userData);
+        
+      } catch (error) {
+        console.error('Error generating token:', error);
+        showError(error.message);
+      } finally {
+        document.getElementById('loading-container').classList.add('hidden');
+      }
+    }
+
+    async function downloadPDF() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showError("You are not logged in. Please log in first.");
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+        return;
+      }
+      
+      try {
+        // Show loading state
+        const downloadBtn = document.getElementById("download-btn");
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = "Generating PDF...";
+        
+        const response = await fetch("/api/digital-token/download", {
+          method: "GET",
+          headers: { 
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          }
+        });
+        
+        console.log('PDF download response status:', response.status);
+        
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          showError("Session expired. Please log in again.");
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+          return;
+        }
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Error response:', errorData);
+          throw new Error(errorData.error || errorData.message || "Failed to generate PDF");
+        }
+        
+        // Get the blob from the response
+        const blob = await response.blob();
+        console.log('Received blob type:', blob.type);
+        
+        // Check if the blob is a valid PDF
+        if (blob.type !== 'application/pdf') {
+          throw new Error("Invalid PDF file received. Expected PDF but got: " + blob.type);
+        }
+        
+        // Create a temporary link and trigger download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "digital_token.pdf";
+        document.body.appendChild(a);
+        a.click();
+        
+        // Clean up
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        // Reset button
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = "Download PDF";
+      } catch (error) {
+        console.error("Error downloading PDF:", error);
+        showError(error.message || "Failed to download PDF. Please try again.");
+        // Reset button
+        const downloadBtn = document.getElementById("download-btn");
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = "Download PDF";
+      }
+    }
+
+    // Initialize when the page loads
+    document.addEventListener("DOMContentLoaded", generateToken);
+  </script>
+</body>
+</html>
