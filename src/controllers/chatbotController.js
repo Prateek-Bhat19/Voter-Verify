@@ -399,18 +399,8 @@ function handleStaticResponse(req, res) {
 // Get chat history for a specific room
 exports.getChatHistory = async (req, res) => {
     try {
-        const { roomId } = req.params;
-        const { limit = 50 } = req.query;
-        
-        if (!roomId) {
-            return res.status(400).json({ error: "Room ID is required" });
-        }
-        
-        const messages = await ChatMessage.find({ room: roomId })
-            .sort({ createdAt: 1 })
-            .limit(parseInt(limit));
-            
-        res.json(messages);
+        // Return empty array to prevent showing old messages
+        res.json([]);
     } catch (error) {
         console.error("Error fetching chat history:", error);
         res.status(500).json({ error: "Failed to fetch chat history" });

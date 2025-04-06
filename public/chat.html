@@ -9,173 +9,181 @@
   <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
   <style>
     body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom, #0A2540, #14467C);
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-}
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #0A2540, #14467C);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
 
-.container {
-  max-width: 900px;
-  width: 100%;
-  padding: 20px;
-}
+    .chat-container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      border: 2px solid #14467C;
+    }
 
-.chat-container {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-  border: 2px solid #14467C;
-}
+    .chat-header {
+      background: linear-gradient(to right, #0A2540, #14467C);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
 
-.chat-header {
-  background: linear-gradient(to right, #0A2540, #14467C);
-  color: white;
-  padding: 20px;
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
+    .chat-header img {
+      height: 40px;
+      width: 40px;
+      filter: invert(1);
+    }
 
-.chat-header img {
-  height: 40px;
-  width: 40px;
-  filter: invert(1);
-}
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f0f5ff;
+      display: flex;
+      flex-direction: column;
+    }
 
-.chat-header p {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
+    .message {
+      margin-bottom: 15px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
 
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  background: #f0f5ff;
-  display: flex;
-  flex-direction: column;
-}
+    .user-message {
+      align-self: flex-end;
+      background: #4F8CCF;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 18px 18px 0 18px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-.message {
-  margin-bottom: 15px;
-  max-width: 80%;
-  word-wrap: break-word;
-}
+    .system-message {
+      align-self: flex-start;
+      background: #E3F2FD;
+      color: #0A2540;
+      padding: 12px 18px;
+      border-radius: 18px 18px 18px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-.user-message {
-  align-self: flex-end;
-  background: #4F8CCF;
-  color: white;
-  padding: 12px 18px;
-  border-radius: 18px 18px 0 18px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+    .message-time {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 5px;
+      text-align: right;
+    }
 
-.system-message {
-  align-self: flex-start;
-  background: #E3F2FD;
-  color: #0A2540;
-  padding: 12px 18px;
-  border-radius: 18px 18px 18px 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+    .typing-indicator {
+      color: #666;
+      font-style: italic;
+      font-size: 0.9rem;
+      padding: 10px;
+      display: none;
+    }
 
-.message-time {
-  font-size: 0.75rem;
-  color: #888;
-  margin-top: 5px;
-  text-align: right;
-}
+    .chat-input-container {
+      display: flex;
+      border-top: 2px solid #ddd;
+      background: white;
+      padding: 15px;
+      align-items: center;
+    }
 
-.typing-indicator {
-  color: #666;
-  font-style: italic;
-  font-size: 0.9rem;
-  padding: 10px;
-  display: none;
-}
+    .chat-input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid #4F8CCF;
+      border-radius: 25px;
+      outline: none;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
 
-.chat-input {
-  display: flex;
-  border-top: 2px solid #ddd;
-  background: white;
-  padding: 15px;
-  align-items: center;
-}
+    .chat-input:focus {
+      border-color: #0A2540;
+      box-shadow: 0 0 5px rgba(10, 37, 64, 0.5);
+    }
 
-.chat-input input {
-  flex: 1;
-  padding: 12px 15px;
-  border: 2px solid #4F8CCF;
-  border-radius: 25px;
-  outline: none;
-  font-size: 1rem;
-  transition: all 0.3s;
-}
+    .send-button {
+      background: linear-gradient(to right, #4F8CCF, #0A2540);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 10px;
+      transition: 0.3s;
+    }
 
-.chat-input input:focus {
-  border-color: #0A2540;
-  box-shadow: 0 0 5px rgba(10, 37, 64, 0.5);
-}
+    .send-button:hover {
+      background: linear-gradient(to right, #66a3d2, #14467C);
+      transform: scale(1.05);
+    }
 
-.chat-input button {
-  background: linear-gradient(to right, #4F8CCF, #0A2540);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  padding: 12px 18px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-left: 10px;
-  transition: 0.3s;
-}
+    /* Back button styling */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: 0.3s;
+    }
 
-.chat-input button:hover {
-  background: linear-gradient(to right, #66a3d2, #14467C);
-  transform: scale(1.05);
-}
-
+    .back-button:hover {
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
-  <div class="container mt-4">
-    <div class="chat-container">
-      <div class="chat-header">
-        <img src="img/Emblem_of_India.svg" alt="Emblem of India">
-        <div>
-          <h2>E-Voting Chat Support</h2>
-          <p>We're here to help you with any questions</p>
-        </div>
+  <div class="chat-container">
+    <button class="back-button" onclick="window.history.back()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <div class="chat-header">
+      <img src="img/Emblem_of_India.svg" alt="Emblem of India">
+      <div>
+        <h2>E-Voting Chat Support</h2>
+        <p>We're here to help you with any questions</p>
       </div>
-      
-      <div id="chat-messages" class="chat-messages">
-        <div class="message system-message">
-          <div class="message-content">Hello! I'm your voting assistant. How can I help you with the e-voting process today?</div>
-          <div class="message-time">Just now</div>
-        </div>
+    </div>
+    
+    <div id="chat-messages" class="chat-messages">
+      <div class="message system-message">
+        <div class="message-content">Hello! I'm your voting assistant. How can I help you with the e-voting process today?</div>
+        <div class="message-time">Just now</div>
       </div>
-      
-      <div class="typing-indicator" id="typing-indicator">
-        Assistant is typing...
-      </div>
-      
-      <div class="chat-input-container">
-        <input type="text" id="user-input" placeholder="Type your message..." class="chat-input">
-        <button onclick="sendMessage()" class="send-button">Send</button>
-      </div>
+    </div>
+    
+    <div class="typing-indicator" id="typing-indicator">
+      Assistant is typing...
+    </div>
+    
+    <div class="chat-input-container">
+      <input type="text" id="user-input" placeholder="Type your message..." class="chat-input">
+      <button onclick="sendMessage()" class="send-button">Send</button>
     </div>
   </div>
 
@@ -193,8 +201,6 @@
     // Generate a room ID - either user specific or guest
     const roomId = userId ? `user_${userId}` : `guest_${Date.now()}`;
     
-    console.log('Connecting to socket.io...');
-    
     // Connect to Socket.io with retry logic
     const socket = io({
       reconnectionAttempts: 5,
@@ -206,10 +212,7 @@
     // Handle socket connection events
     socket.on('connect', () => {
       console.log('Socket.io connected successfully');
-      
-      // Join room
       socket.emit('joinRoom', roomId);
-      console.log('Joined chat room:', roomId);
     });
     
     socket.on('connect_error', (error) => {
@@ -223,25 +226,6 @@
     socket.on('reconnect_failed', () => {
       console.error('Socket.io reconnection failed');
       addMessage('Chat connection failed. Please refresh the page.', 'system', 'Just now');
-    });
-    
-    // Load previous messages
-    socket.on('previousMessages', (messages) => {
-      console.log('Received previous messages:', messages);
-      chatMessages.innerHTML = ''; // Clear default message
-      
-      if (messages.length === 0) {
-        // Add welcome message if no previous messages
-        addMessage("Hello! I'm your voting assistant. How can I help you with the e-voting process today?", 'system');
-      } else {
-        // Display previous messages
-        messages.forEach(msg => {
-          addMessage(msg.text, msg.sender, new Date(msg.createdAt).toLocaleTimeString());
-        });
-      }
-      
-      // Scroll to bottom
-      scrollToBottom();
     });
     
     // Listen for new messages
@@ -273,294 +257,58 @@
       // Clear input
       messageInput.value = '';
       
-      // Add message to UI
+      // Add current message
       addMessage(message, 'user', 'Just now');
       scrollToBottom();
       
       // Show typing indicator
       typingIndicator.style.display = 'block';
       
-      console.log('Sending message to server:', message);
+      // Send message to server
+      fetch('https://voter-verify.onrender.com/api/chatbot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          message: message,
+          userId: userId || null,
+          roomId: roomId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Hide typing indicator
+        typingIndicator.style.display = 'none';
+        
+        if (data.reply) {
+          addMessage(data.reply, 'system', 'Just now');
+        } else {
+          addMessage('Sorry, I could not process your request. Please try again.', 'system', 'Just now');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        typingIndicator.style.display = 'none';
+        addMessage('Sorry, there was an error processing your request. Please try again.', 'system', 'Just now');
+      });
       
-      // Format message to make it more specific to voting
-      let formattedMessage = message;
-      if (!message.toLowerCase().includes('vote') && 
-          !message.toLowerCase().includes('election') && 
-          !message.toLowerCase().includes('voter')) {
-        formattedMessage = `Regarding Indian voting process: ${message}`;
-      }
-      
-      // Try api with safeguard
-      tryFetchChatbot(formattedMessage);
-      
-      // Also emit message to socket (this ensures real-time updates)
+      // Also emit message to socket
       socket.emit('chatMessage', {
         userId: userId || null,
         room: roomId,
-        text: formattedMessage,
+        text: message,
         sender: 'user'
       });
     }
     
-    // Common responses to questions about voting in India
-    const responses = {
-      'who can be a voter': `
-## Voter Eligibility in India
-
-To be eligible to vote in Indian elections, a person must:
-
-• Be a **citizen of India**
-• Have attained the **age of 18 years** or above on the qualifying date (January 1 of the year of electoral roll revision)
-• Be **ordinarily resident** in the constituency where registered
-• **Not be disqualified** under provisions of the Representation of the People Act, 1950
-
-**Note:** Non-resident Indians (NRIs) who are citizens of India are also eligible to be enrolled as voters.`,
-
-      'what should a voter do on voting day': `
-## Voting Day Procedure in India
-
-On election day, follow these steps:
-
-1. **Check voting time** - Usually 7:00 AM to 6:00 PM
-2. **Carry valid ID proof** - Voter ID card, Aadhaar, passport, etc.
-3. **Locate your polling booth** - Check your voter slip or ECI website
-4. **Stand in queue** - Separate queues for men and women
-5. **Verification process** - Officials will verify your identity
-6. **Indelible ink** - Ink will be applied on your finger
-7. **Electronic voting** - Cast your vote on the EVM by pressing the button
-8. **Check VVPAT** - Verify your vote through the VVPAT machine if available
-
-Remember to maintain peace and follow COVID protocols if applicable.`,
-
-      'how to register': `
-## Voter Registration Process in India
-
-To register as a voter in India:
-
-1. **Online Registration**:
-   • Visit the National Voter Service Portal (NVSP): https://www.nvsp.in/
-   • Fill Form 6 for new registration
-   • Upload required documents (proof of age, residence, photo)
-   • Submit the application
-
-2. **Offline Registration**:
-   • Obtain Form 6 from Electoral Registration Office or download it
-   • Fill the form with required details
-   • Attach necessary documents
-   • Submit to local Electoral Registration Officer
-
-**Required Documents**:
-• Proof of age (Birth certificate, Aadhaar, passport, etc.)
-• Proof of residence (Utility bills, bank statements, etc.)
-• Passport-sized photographs
-
-The Electoral Registration Officer will process your application and inform you about the status.`,
-
-      'voter id card': `
-## Voter ID Card Information
-
-The Voter ID Card, officially known as the **Electors Photo Identity Card (EPIC)**, is a key document for Indian voters.
-
-**Purpose**:
-• Serves as identity proof for voting
-• Acts as official government ID for various purposes
-
-**How to Apply**:
-• Online through National Voter Service Portal (NVSP)
-• Offline at Electoral Registration Office
-• Through BLO (Booth Level Officer) during special drives
-
-**Features**:
-• Contains voter's photo, name, father's/husband's name
-• Has unique EPIC number
-• Shows assembly constituency details
-
-**If Lost/Damaged**:
-Apply for a duplicate through Form 8 at the Electoral Registration Office or online through NVSP.`,
-
-      'election schedule': `
-## Election Schedule in India
-
-Elections in India are conducted by the Election Commission of India (ECI), an autonomous constitutional authority.
-
-**General Election (Lok Sabha)**:
-• Held every 5 years
-• 543 constituencies across India
-• Usually conducted in multiple phases spanning several weeks
-
-**State Assembly Elections**:
-• Held every 5 years for each state
-• Schedule varies by state
-• May coincide with general elections or be held separately
-
-**Current/Upcoming Elections**:
-For the most current election schedules, please visit the official Election Commission of India website at https://eci.gov.in/
-
-The Election Commission announces the detailed schedule including nomination dates, polling dates, and counting dates a few weeks before the elections.`
-    };
-    
-    // Separate function to try the API with fallbacks
-    async function tryFetchChatbot(message) {
-      try {
-        // Format payload exactly as expected by the server
-        const payload = {
-          message: message.trim(),
-          userId: userId || null,
-          roomId: roomId
-        };
-        
-        console.log('Sending API request with payload:', payload);
-        
-        // Make API request with proper headers and payload
-        const response = await fetch('https://voter-verify.onrender.com/api/chatbot', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-          },
-          body: JSON.stringify(payload)
-        });
-        
-        // For debugging
-        const responseText = await response.text();
-        console.log(`API response (${response.status}):`, responseText);
-        
-        // Handle non-success responses
-        if (!response.ok) {
-          console.error(`Server error response (${response.status}):`, responseText);
-          handleStaticResponse(message);
-          return;
-        }
-        
-        // Process successful response
-        try {
-          // Parse JSON response
-          const data = JSON.parse(responseText);
-          
-          // Hide typing indicator
-          typingIndicator.style.display = 'none';
-          
-          // Display response if available
-          if (data && data.reply) {
-            addMessage(data.reply, 'system', 'Just now');
-            return;
-          } else {
-            console.log('No reply in response data:', data);
-            handleStaticResponse(message);
-          }
-        } catch (parseError) {
-          console.error('Failed to parse JSON response:', parseError);
-          handleStaticResponse(message);
-        }
-      } catch (error) {
-        console.error('Error in API request:', error);
-        handleStaticResponse(message);
-      }
-    }
-    
-    // Improved static response handler
-    function handleStaticResponse(message) {
-      // Hide typing indicator
-      typingIndicator.style.display = 'none';
-      
-      const lowerMessage = message.toLowerCase();
-      
-      // Check exact phrases first (most specific)
-      for (const [key, response] of Object.entries(responses)) {
-        if (lowerMessage.includes(key)) {
-          addMessage(response, 'system', 'Just now');
-          return;
-        }
-      }
-      
-      // Check for specific election-related keywords
-      if (lowerMessage.includes('upcoming') || lowerMessage.includes('schedule') || lowerMessage.includes('next election') || lowerMessage.includes('when')) {
-        addMessage(responses['election schedule'], 'system', 'Just now');
-        return;
-      }
-      
-      // Check for registration-related keywords
-      if (lowerMessage.includes('register') || lowerMessage.includes('sign up') || lowerMessage.includes('enroll') || lowerMessage.includes('how to vote')) {
-        addMessage(responses['how to register'], 'system', 'Just now');
-        return;
-      }
-      
-      // Check for voter ID related keywords
-      if (lowerMessage.includes('id') || lowerMessage.includes('card') || lowerMessage.includes('identification')) {
-        addMessage(responses['voter id card'], 'system', 'Just now');
-        return;
-      }
-      
-      // Check for eligibility related keywords
-      if (lowerMessage.includes('eligible') || lowerMessage.includes('who can') || lowerMessage.includes('qualify') || lowerMessage.includes('can i vote')) {
-        addMessage(responses['who can be a voter'], 'system', 'Just now');
-        return;
-      }
-      
-      // Check for voting day related keywords
-      if (lowerMessage.includes('voting day') || lowerMessage.includes('election day') || lowerMessage.includes('how to cast') || lowerMessage.includes('booth') || lowerMessage.includes('poll')) {
-        addMessage(responses['what should a voter do on voting day'], 'system', 'Just now');
-        return;
-      }
-      
-      // Check individual keywords for more general response
-      const keywords = ['voter', 'election', 'voting', 'vote', 'ballot', 'democracy', 'candidate', 'constituency', 'polling', 'booth', 'eci', 'electoral', 'commission'];
-      for (const keyword of keywords) {
-        if (lowerMessage.includes(keyword)) {
-          addMessage(defaultVotingResponse(), 'system', 'Just now');
-          return;
-        }
-      }
-      
-      // If nothing else matches, provide a helpful prompt
-      addMessage(`
-## Welcome to E-Voting Support
-
-I'm your voting assistant and I can help you with:
-
-• Voter registration process
-• Voter ID card information
-• Election schedules and dates
-• Voting day procedures
-• Voter eligibility criteria
-• Polling booth locations
-
-Please ask me a question about any of these topics, and I'll provide you with detailed information.
-
-For example, you can ask:
-- How do I register to vote?
-- What documents do I need for voter ID?
-- When are the next elections?
-- What should I do on voting day?
-- Who is eligible to vote in India?`, 'system', 'Just now');
-    }
-    
-    // Default response about the voting system
-    function defaultVotingResponse() {
-      return `
-## Indian Voting System
-
-The Indian electoral system is based on the principle of universal adult suffrage, where every citizen who is 18 years or older has the right to vote, regardless of race, gender, caste, religion, or social status.
-
-**Key Features**:
-• **First-Past-The-Post System**: Candidate with the most votes wins
-• **Electronic Voting Machines (EVMs)**: Used since 2000
-• **VVPAT (Voter Verifiable Paper Audit Trail)**: Provides paper verification
-• **Election Commission of India**: Independent constitutional body that conducts elections
-
-For specific information about voter registration, ID cards, or election schedules, please ask a more specific question.`;
-    }
-    
     function addMessage(text, sender, time = 'Just now') {
-      console.log('Adding message to UI:', { text, sender, time });
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${sender}-message`;
       
       const contentDiv = document.createElement('div');
       contentDiv.className = 'message-content';
-      
-      // Handle markdown content properly by using innerHTML instead of textContent
-      // This allows formatted responses to display correctly
       contentDiv.innerHTML = text;
       
       const timeDiv = document.createElement('div');
@@ -571,6 +319,7 @@ For specific information about voter registration, ID cards, or election schedul
       messageDiv.appendChild(timeDiv);
       
       chatMessages.appendChild(messageDiv);
+      scrollToBottom();
     }
     
     function scrollToBottom() {
@@ -580,23 +329,9 @@ For specific information about voter registration, ID cards, or election schedul
     // Clear chat history when page loads
     document.addEventListener('DOMContentLoaded', function() {
         const chatMessages = document.getElementById('chat-messages');
-        chatMessages.innerHTML = ''; // Clear all messages
+        chatMessages.innerHTML = '';
+        addMessage("Hello! I'm your voting assistant. How can I help you with the e-voting process today?", 'system', 'Just now');
     });
-
-    function displayMessage(message, isUser = false) {
-        const chatMessages = document.getElementById('chat-messages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = isUser ? 'user-message' : 'bot-message';
-        
-        // Convert markdown to HTML
-        const formattedMessage = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                                      .replace(/\n/g, '<br>');
-        
-        messageDiv.innerHTML = formattedMessage;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
   </script>
 </body>
 </html> 
