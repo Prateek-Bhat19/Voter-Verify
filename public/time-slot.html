@@ -221,6 +221,7 @@
     async function bookSlot(event) {
       const button = event.target;
       const slotId = button.getAttribute("data-slot-id");
+
       button.disabled = true;
       button.innerText = "Booking...";
       button.classList.replace("bg-blue-600", "bg-gray-400");
@@ -237,13 +238,14 @@
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            date: selectedDate,
-            startTime: selectedStartTime,
-            endTime: selectedEndTime
+            slotId: slotId
           })
         });
 
-        if (!response.ok) throw new Error("Failed to book slot.");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to book slot.");
+        }
 
         showMessage("Slot booked successfully!", "success");
         await fetchSlots(slotDateInput.value);
