@@ -241,30 +241,26 @@
       addMessage('Sorry, there was an error with the chat service.', 'system', 'Just now');
     });
     
-    // Send message
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendMessage();
-      }
-    });
-    
+    // Add message queue to prevent duplicate messages
+    let lastMessage = '';
+    let isProcessing = false;
+
     function sendMessage() {
       const message = messageInput.value.trim();
       
       if (!message) return;
       
+      // Check for duplicate message
+      if (message === lastMessage) {
+        return;
+      }
+      
+      // Set processing flag and update last message
+      isProcessing = true;
+      lastMessage = message;
+      
       // Clear input
       messageInput.value = '';
-      
-      // Check if the last message was the same
-      const lastMessage = chatMessages.lastElementChild;
-      if (lastMessage && lastMessage.classList.contains('user-message')) {
-        const lastMessageContent = lastMessage.querySelector('.message-content').textContent;
-        if (lastMessageContent === message) {
-          return; // Don't send duplicate message
-        }
-      }
       
       // Add current message
       addMessage(message, 'user', 'Just now');
@@ -296,21 +292,28 @@
         } else {
           addMessage('Sorry, I could not process your request. Please try again.', 'system', 'Just now');
         }
+        isProcessing = false;
       })
       .catch(error => {
         console.error('Error:', error);
         typingIndicator.style.display = 'none';
         addMessage('Sorry, there was an error processing your request. Please try again.', 'system', 'Just now');
-      });
-      
-      // Also emit message to socket
-      socket.emit('chatMessage', {
-        userId: userId || null,
-        room: roomId,
-        text: message,
-        sender: 'user'
+        isProcessing = false;
       });
     }
+
+    // Prevent multiple clicks/enter presses
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !isProcessing) {
+        sendMessage();
+      }
+    });
+
+    sendButton.addEventListener('click', () => {
+      if (!isProcessing) {
+        sendMessage();
+      }
+    });
     
     function addMessage(text, sender, time = 'Just now') {
       const messageDiv = document.createElement('div');
