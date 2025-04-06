@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- <link rel="stylesheet" href="css/chatbot.css"> -->
+    <link rel="stylesheet" href="css/output.css">
+    <style>
+      .service-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .service-icon {
+        transition: transform 0.3s ease;
+      }
+      .service-card:hover .service-icon {
+        transform: scale(1.1);
+      }
+      .welcome-text {
+        background: linear-gradient(45deg, #160C56, #4F8CCF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .chat-button {
+        transition: all 0.3s ease;
+      }
+      .chat-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body
+    class="flex flex-col bg-gradient-to-b from-slate-100 to-blue-200 min-h-screen"
+  >
+  <header class="w-full bg-[#160C56] shadow-sm py-4 px-6">
+    <div class="mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- Logo/Brand -->
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12">
+                <img src="img/Emblem_of_India.svg" alt="emblem" class="h-full w-full text-white filter invert">
+                </div>
+                <div class="text-3xl font-bold text-white">
+                Election Commission
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation - Only visible on md screens and up -->
+            <nav class="hidden md:block">
+                <ul class="flex gap-8">
+                    <li>
+                        <a 
+                            href="index.html#home" 
+                            class="header-text hover:text-blue-300 transition duration-300"
+                        >
+                            Home
+                        </a>
+                    </li>
+                  
+                    <li>
+                        <a 
+                            href="index.html#contact" 
+                            class="header-text hover:text-blue-300 transition duration-300"
+                        >
+                            Contact
+                        </a>
+                    </li>
+                    
+                </ul>
+            </nav>
+            
+            <!-- Mobile menu button - Only visible on small screens -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Sidebar - Hidden by default -->
+<div id="mobile-sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-50 shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out z-50">
+    <div class=" p-6">
+        <!-- Close button -->
+        <button id="sidebar-close" class="absolute top-4 right-4 text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+                    <!-- Sidebar Logo -->
+        <div class="text-2xl font-semibold text-gray-800 mb-8">
+            Election Commission
+        </div>
+        
+        
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul class="space-y-4">
+                <li>
+                    <a 
+                        href="index.html#home" 
+                        class="mobile-header hover:text-blue-600 transition duration-300"
+                    >
+                        Home
+                    </a>
+                </li>
+                
+                <li>
+                    <a 
+                        href="/index.html#contact" 
+                        class="mobile-header hover:text-blue-600 transition duration-300"
+                    >
+                        Contact
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1 class="text-4xl font-bold text-center welcome-text mb-8">
+        Welcome to Your Dashboard
+      </h1>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+        <!-- Express Verification -->
+        <div class="service-card bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+          <img src="img/verification-svgrepo-com.svg" alt="Verification Icon" class="w-16 h-16 mb-4 service-icon">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Express Verification</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Quickly verify your identity with our express verification service.
+          </p>
+          <button id="express-verification" class="bg-[#160C56] text-white py-2 px-4 rounded-lg hover:bg-blue-800 transition duration-300 w-full">
+            Express Verification
+          </button>
+        </div>
+
+        <!-- Time Slot Booking -->
+        <div class="service-card bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+          <img src="img/calendar-date-schedule-svgrepo-com.svg" alt="Calendar Icon" class="w-16 h-16 mb-4 service-icon">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Time Slot Booking</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Book a convenient time slot for your verification process.
+          </p>
+          <button id="time-slot-booking" class="bg-[#160C56] text-white py-2 px-4 rounded-lg hover:bg-blue-800 transition duration-300 w-full">
+            Time Slot Booking
+          </button>
+        </div>
+
+        <!-- Digital Token Generation -->
+        <div class="service-card bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+          <img src="img/token-svgrepo-com.svg" alt="Token Icon" class="w-16 h-16 mb-4 service-icon">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Digital Token Generation</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Generate a secure digital token for quick access.
+          </p>
+          <button id="digital-token" class="bg-[#160C56] text-white py-2 px-4 rounded-lg hover:bg-blue-800 transition duration-300 w-full">
+            Digital Token Generation
+          </button>
+        </div>
+
+        <!-- SOS -->
+        <div class="service-card bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+          <img src="img/view-svgrepo-com.svg" alt="SOS Icon" class="w-16 h-16 mb-4 service-icon">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Emergency Support</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Request immediate assistance with our SOS service.
+          </p>
+          <button id="sos" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300 w-full">
+            Emergency Support
+          </button>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <div class="mt-12 flex justify-center">
+        <button id="logout" class="text-white bg-red-600 hover:bg-red-700 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 transition duration-300">
+          Logout
+        </button>
+      </div>
+    </div>
+    
+
+    <div class="fixed bottom-6 right-6 z-50">
+      <a href="/chat.html"
+          class="chat-button flex items-center justify-center w-16 h-16 bg-white/30 backdrop-blur-lg border border-white/50 text-[#160C56] rounded-full shadow-xl hover:bg-[#160C56] hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-chat"
+              viewBox="0 0 16 16">
+              <path
+                  d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6.414L2 16V2zm10 9V3H4v9h1.586L6 12.414V11h6z" />
+          </svg>
+      </a>
+  </div>
+   
+    </div>
+
+    <footer class="bg-[#160C56] text-white text-center py-4">
+      <p>&copy; 2025 E-Voting System. All rights reserved.</p>
+    </footer>
+
+    <script src="js/header-functionality.js"></script>
+    <script src="js/chatbot.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Check if user is authenticated
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("Unauthorized! Please log in.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Redirect buttons
+        document.getElementById("express-verification").addEventListener("click", () => {
+          window.location.href = "/express-verification.html";
+        });
+
+        document.getElementById("time-slot-booking").addEventListener("click", () => {
+          window.location.href = "/time-slot.html";
+        });
+
+        document.getElementById("digital-token").addEventListener("click", () => {
+          window.location.href = "/digital-token.html";
+        });
+
+        document.getElementById("sos").addEventListener("click", () => {
+          alert("Emergency support team will contact you shortly.");
+        });
+
+        // Logout button functionality
+        document.getElementById("logout").addEventListener("click", () => {
+          localStorage.removeItem("token");
+          alert("Logged out successfully!");
+          window.location.href = "login.html";
+        });
+      });
+    </script>
+  </body>
+</html>

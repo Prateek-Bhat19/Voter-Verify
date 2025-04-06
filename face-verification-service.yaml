@@ -1,0 +1,31 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: face-verification
+spec:
+  template:
+    spec:
+      containers:
+      - image: gcr.io/absolute-nexus-455918-j8/face-verification:v1
+        ports:
+        - containerPort: 5001
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+        env:
+        - name: PORT
+          value: "5001"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DEEPFACE_HOME
+          value: "/app/deepface_weights"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3 

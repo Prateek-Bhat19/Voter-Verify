@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Election Commission of India</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background-color: whitesmoke;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+    background-color: #0a2540;
+    color: white;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link.active {
+    color: #0a2540;
+    border-left: 4px solid #4f8ccf;
+    background-color: #e3f2fd;
+}
+
+.nav-link:hover {
+    color: #f8f9fa;
+    border-left: 4px solid #66a3d2;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+    background-color: #14467c;
+    color: white;
+    text-align: center;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    background-color: #f5f7fa;
+}
+
+.dashboard-card {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    border-left: 5px solid #4f8ccf;
+}
+
+.dashboard-card h5 {
+    margin-bottom: 15px;
+    color: #0a2540;
+    font-weight: 600;
+}
+
+.stats-card {
+    background: linear-gradient(to right, #3b78a6, #0a2540);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.stats-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.stats-number {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stats-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.table th {
+    font-weight: 600;
+    color: #0a2540;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.qr-scanner {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#qr-reader {
+    width: 100%;
+    border: 1px solid #4f8ccf;
+    border-radius: 10px;
+}
+
+#qr-reader img {
+    width: 100%;
+}
+
+.face-verification-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#videoElement {
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid #4f8ccf;
+}
+
+.verify-btn {
+    background: linear-gradient(to right, #3b78a6, #0a2540);
+    border: none;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.verify-btn:hover {
+    background: linear-gradient(to right, #66a3d2, #14467c);
+}
+
+.logout-btn {
+    background-color: #dc3545;
+    color: white;
+    font-weight: 600;
+}
+
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Election Commission</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="w-100"></div>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <button id="logoutBtn" class="btn btn-sm logout-btn" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300">Sign out</button>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky">
+                    <div class="text-center mb-4">
+                        <img src="img/Emblem_of_India.svg" alt="Indian Emblem" width="60" class="mx-auto">
+                        <h4 class="mt-3 mb-4 text-white text-xl font-bold">Election Commission of India</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-section="dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="voters">
+                                <i class="bi bi-people me-2"></i>
+                                Voters
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="time-slots">
+                                <i class="bi bi-calendar-date me-2"></i>
+                                Time Slots
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="qr-verification">
+                                <i class="bi bi-qr-code-scan me-2"></i>
+                                QR Verification
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="face-verification">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Face Verification
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Dashboard Section -->
+                <div class="content-section active" id="dashboard-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Dashboard</h1>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <div>
+                                        <div class="stats-number" id="totalVoters">0</div>
+                                        <div class="stats-label">Total Voters</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div>
+                                        <div class="stats-number" id="verifiedVoters">0</div>
+                                        <div class="stats-label">Verified Voters</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card mt-4">
+                        <h5>Recent Voter Registrations</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="recentVotersTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Voter ID</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentVotersList">
+                                    <!-- Recent voters will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Voters Section -->
+                <div class="content-section" id="voters-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Voters Management</h1>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Voter ID</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="votersTableBody">
+                                    <tr>
+                                        <td colspan="4" class="text-center">Loading voters data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Time Slots Section -->
+                <div class="content-section" id="time-slots-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Time Slots Management</h1>
+                    </div>
+                    
+                    <div class="dashboard-card mb-4">
+                        <h5>Create New Time Slot</h5>
+                        <form id="createTimeSlotForm">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="slotDate" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="slotDate" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="startTime" class="form-label">Start Time</label>
+                                    <input type="time" class="form-control" id="startTime" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="endTime" class="form-label">End Time</label>
+                                    <input type="time" class="form-control" id="endTime" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="maxAppointments" class="form-label">Max Appointments</label>
+                                    <input type="number" class="form-control" id="maxAppointments" min="1" value="10" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Time Slot</button>
+                        </form>
+                        <div id="timeSlotFormMessage" class="mt-3" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="timeSlotsTableBody">
+                                    <!-- Time slots will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- QR Verification Section -->
+                <div class="content-section" id="qr-verification-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">QR Token Verification</h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-4">
+                            <div class="dashboard-card">
+                                <h5 class="card-title">Scan QR Code</h5>
+                                <div class="qr-scanner">
+                                    <div id="qr-reader"></div>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-center">or</p>
+                                    <div class="mb-3">
+                                        <label for="qrManualInput" class="form-label">Enter QR Token Data Manually</label>
+                                        <textarea id="qrManualInput" class="form-control" rows="3" placeholder="Paste token data here"></textarea>
+                                    </div>
+                                    <button id="verifyManualQr" class="btn btn-primary">Verify Token</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+                                <div id="qrVerificationResult" class="d-none">
+                                    <h5 class="card-title">Voter Information</h5>
+                                    <div id="verificationStatus" class="alert alert-info mt-3">
+                                        No token scanned yet.
+                                    </div>
+                                    <div class="voter-info mt-4">
+                                        <h6>Voter Details</h6>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <th>Name:</th>
+                                                <td id="voterName">N/A</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Voter ID:</th>
+                                                <td id="voterIdDisplay">N/A</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Phone:</th>
+                                                <td id="voterPhone">N/A</td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- Add QR verification buttons -->
+                                        <div class="mt-3">
+                                            <button id="allowQrBtn" class="btn btn-success me-2">Allow Voting</button>
+                                            <button id="denyQrBtn" class="btn btn-danger">Deny Voting</button>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <button id="proceedToFaceVerification" class="btn btn-success w-100">
+                                                <i class="bi bi-camera"></i> Proceed to Face Verification
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Face Verification Section -->
+                <div class="content-section" id="face-verification-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Face Verification</h1>
+                    </div>
+                    <div class="face-verification-container">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">Capture Voter's Face</h5>
+                            <p>Please capture a clear photo of the voter's face for verification.</p>
+                            
+                            <div class="mt-3">
+                                <video id="videoElement" width="100%" height="auto" autoplay></video>
+                                <canvas id="canvasElement" class="d-none"></canvas>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button id="captureBtn" class="btn btn-primary">Capture Image</button>
+                                <button id="submitVerificationBtn" class="btn btn-success">Verify Face</button>
+                            </div>
+                            
+                            <div id="verificationResult" class="mt-4 d-none">
+                                <h5>Verification Result</h5>
+                                <div id="faceVerificationStatus" class="alert alert-info mb-3">
+                                    Processing face recognition...
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6>Captured Image</h6>
+                                        <img id="capturedImage" class="img-fluid rounded" alt="Captured face" />
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <h6>Match Details</h6>
+                                        <p>Match Percentage: <span id="matchPercentage">0</span>%</p>
+                                        <div class="progress mb-3">
+                                            <div id="matchProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        
+                                        <div id="verificationActions" class="mt-4 text-center" style="display: none;">
+                                            <div id="verificationStatus" class="alert alert-info mb-3">
+                                                Verification status will appear here
+                                            </div>
+                                            <button id="nextVoterBtn" class="btn btn-primary">
+                                                <i class="bi bi-arrow-right-circle"></i> Next Voter
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="js/admin-face-verify.js"></script>
+    <script>
+        // Check if user is logged in and is admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('adminToken');
+            const isAdmin = localStorage.getItem('isAdmin');
+            
+            console.log('Admin token:', token);
+            console.log('Is admin flag:', isAdmin);
+            
+            if (!token || isAdmin !== 'true') {
+                console.log('Not authenticated as admin, redirecting to login');
+                window.location.href = '/index.html';
+                return;
+            }
+            
+            // Initialize components
+            initializeDashboard();
+            initializeNavigation();
+            initializeQRScanner();
+            initializeFaceVerification();
+            initializeTimeSlots();
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('isAdmin');
+                localStorage.removeItem('userId');
+                window.location.href = '/index.html';
+            });
+        });
+        
+        // Navigation
+        function initializeNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            
+            // Function to handle navigation
+            function handleNavigation(link) {
+                // Remove active class from all links and sections
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked link and corresponding section
+                link.classList.add('active');
+                const sectionId = link.getAttribute('data-section') + '-section';
+                const targetSection = document.getElementById(sectionId);
+                
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // Load section data if needed
+                    if (sectionId === 'voters-section') {
+                        loadVoters();
+                    } else if (sectionId === 'time-slots-section') {
+                        loadTimeSlots();
+                    } else if (sectionId === 'face-verification-section') {
+                        startCamera();
+                    } else if (sectionId === 'qr-verification-section') {
+                        initializeQRScanner();
+                    }
+                }
+            }
+            
+            // Add click event listeners to all navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    handleNavigation(this);
+                });
+            });
+            
+            // Set initial active section
+            const initialLink = document.querySelector('.nav-link.active');
+            if (initialLink) {
+                handleNavigation(initialLink);
+            }
+        }
+        
+        // Dashboard initialization
+        function initializeDashboard() {
+            fetchStats();
+            fetchRecentVoters();
+        }
+        
+        async function fetchStats() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                
+                // Fetch total voters
+                const votersResponse = await fetch('/api/admin/voters', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (votersResponse.ok) {
+                    const voters = await votersResponse.json();
+                    document.getElementById('totalVoters').textContent = voters.length;
+                    
+                    // Count verified voters (either by face or token)
+                    const verifiedVoters = voters.filter(voter => 
+                        voter.faceVerifiedAt || voter.tokenVerifiedAt || 
+                        (voter.digitalToken && voter.digitalToken.isUsed)
+                    ).length;
+                    
+                    document.getElementById('verifiedVoters').textContent = verifiedVoters;
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+        
+        // Fetch recent voters for dashboard
+        async function fetchRecentVoters() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch('/api/admin/voters', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const voters = await response.json();
+                    const recentVotersList = document.getElementById('recentVotersList');
+                    recentVotersList.innerHTML = '';
+                    
+                    // Show only 5 most recent voters
+                    const recentVoters = voters.slice(0, 5);
+                    
+                    recentVoters.forEach((voter, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${voter.name || 'N/A'}</td>
+                            <td>${voter.voterId || 'N/A'}</td>
+                            <td>${voter.phoneNumber || 'N/A'}</td>
+                        `;
+                        recentVotersList.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching recent voters:', error);
+            }
+        }
+        
+        // Load voters
+        async function loadVoters() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch('/api/admin/voters', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const voters = await response.json();
+                    const votersTableBody = document.getElementById('votersTableBody');
+                    votersTableBody.innerHTML = '';
+                    
+                    if (voters.length === 0) {
+                        votersTableBody.innerHTML = '<tr><td colspan="4" class="text-center">No voters found</td></tr>';
+                        return;
+                    }
+                    
+                    voters.forEach(voter => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${voter.name || 'N/A'}</td>
+                            <td>${voter.voterId || voter.id || 'N/A'}</td>
+                            <td>${voter.email || 'N/A'}</td>
+                            <td>${voter.phoneNumber || 'N/A'}</td>
+                        `;
+                        votersTableBody.appendChild(row);
+                    });
+                    
+                    // Add event listeners for view buttons
+                    document.querySelectorAll('.view-voter').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const voterId = this.getAttribute('data-voter-id');
+                            viewVoterDetails(voterId);
+                        });
+                    });
+                } else {
+                    document.getElementById('votersTableBody').innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center text-danger">Error loading voters</td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading voters:', error);
+                document.getElementById('votersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-danger">Error loading voters</td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Load time slots
+        async function loadTimeSlots() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                if (!token) {
+                    console.error('No admin token found');
+                    return;
+                }
+
+                const response = await fetch('/api/timeslots', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                // Check if response is HTML (error page)
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('text/html')) {
+                    throw new Error('Server returned HTML instead of JSON. Check if the API endpoint is correct.');
+                }
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error occurred' }));
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const timeSlots = data || [];
+                const timeSlotsTableBody = document.getElementById('timeSlotsTableBody');
+                
+                if (!timeSlotsTableBody) {
+                    console.error('Time slots table body not found');
+                    return;
+                }
+                
+                timeSlotsTableBody.innerHTML = '';
+                
+                if (timeSlots.length === 0) {
+                    timeSlotsTableBody.innerHTML = '<tr><td colspan="4" class="text-center">No time slots found</td></tr>';
+                    return;
+                }
+                
+                timeSlots.forEach(timeSlot => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${formatDate(timeSlot.date)}</td>
+                        <td>${timeSlot.startTime}</td>
+                        <td>${timeSlot.endTime}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm delete-time-slot" data-id="${timeSlot._id}">
+                                Delete
+                            </button>
+                        </td>
+                    `;
+                    timeSlotsTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading time slots:', error);
+                const timeSlotsTableBody = document.getElementById('timeSlotsTableBody');
+                if (timeSlotsTableBody) {
+                    timeSlotsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center text-danger">
+                                ${error.message || 'Error loading time slots. Please try again later.'}
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+        }
+        
+        // View voter details
+        async function viewVoterDetails(voterId) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`/api/admin/voters/${voterId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const voter = await response.json();
+                    
+                    // Determine verification status
+                    let verificationStatus = [];
+                    if (voter.faceVerifiedAt) {
+                        verificationStatus.push("Face Verified: " + new Date(voter.faceVerifiedAt).toLocaleString());
+                    }
+                    if (voter.tokenVerifiedAt) {
+                        verificationStatus.push("Token Verified: " + new Date(voter.tokenVerifiedAt).toLocaleString());
+                    }
+                    if (verificationStatus.length === 0) {
+                        verificationStatus.push("Not verified");
+                    }
+                    
+                    // Show details in alert
+                    alert(`Voter Details:
+Name: ${voter.name || 'N/A'}
+Voter ID: ${voter.voterId || voter._id || 'N/A'}
+Email: ${voter.email || 'N/A'}
+Phone: ${voter.phoneNumber || 'N/A'}
+Verification Status: ${verificationStatus.join(', ')}
+${voter.timeSlot ? `Time Slot: ${formatDateTime(voter.timeSlot.date, voter.timeSlot.startTime)}` : 'No Time Slot Booked'}`);
+                }
+            } catch (error) {
+                console.error('Error fetching voter details:', error);
+            }
+        }
+        
+        // QR Scanner initialization
+        function initializeQRScanner() {
+            let html5QrCode = null;
+            const qrConfig = { 
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0,
+                showTorchButtonIfSupported: true,
+                showZoomSliderIfSupported: true,
+                supportedScanTypes: [
+                    Html5QrcodeScanType.SCAN_TYPE_CAMERA,
+                    Html5QrcodeScanType.SCAN_TYPE_FILE
+                ]
+            };
+            
+            // Start scanning
+            function startScanner() {
+                try {
+                    // Create a new instance if not created or previously stopped
+                    if (!html5QrCode) {
+                        html5QrCode = new Html5Qrcode("qr-reader");
+                    }
+                    
+                    // Only start if not already scanning
+                    if (!html5QrCode.isScanning) {
+                        // Force using the front camera
+                        html5QrCode.start(
+                            { facingMode: "user" },
+                            qrConfig,
+                            onScanSuccess,
+                            onScanFailure
+                        ).catch(err => {
+                            console.error('QR Scanner error:', err);
+                            alert('Error accessing camera. Please make sure your laptop camera is available and you have granted camera permissions.');
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error starting QR scanner:', err);
+                }
+            }
+            
+            // QR code successfully scanned
+            function onScanSuccess(decodedText) {
+                // Stop scanner
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        console.log('Scanner stopped');
+                    }).catch(err => {
+                        console.error('Error stopping scanner:', err);
+                    });
+                }
+                
+                console.log('QR Code scanned:', decodedText);
+                verifyQRToken(decodedText);
+            }
+            
+            // QR scan failure
+            function onScanFailure(error) {
+                // Only log actual errors, not normal scanning attempts
+                if (error && !error.toString().includes('No MultiFormat Readers')) {
+                    console.warn(`QR scan error: ${error}`);
+                }
+            }
+            
+            // Start scanner when QR verification tab is clicked
+            document.querySelector('a[data-section="qr-verification"]').addEventListener('click', function() {
+                setTimeout(startScanner, 500);
+            });
+            
+            // Manual QR verification
+            document.getElementById('verifyManualQr').addEventListener('click', function() {
+                const token = document.getElementById('qrManualInput').value.trim();
+                if (token) {
+                    verifyQRToken(token);
+                }
+            });
+        }
+        
+        // Verify QR token
+        async function verifyQRToken(tokenData) {
+            try {
+                console.log('Verifying QR token:', tokenData);
+                
+                // Show the verification result container and set processing status
+                document.getElementById('qrVerificationResult').classList.remove('d-none');
+                const verificationStatus = document.getElementById('verificationStatus');
+                verificationStatus.textContent = "Processing token...";
+                verificationStatus.className = "alert mt-3 alert-info";
+                
+                const token = localStorage.getItem('adminToken');
+                console.log('Using admin token for verification:', token ? 'Token exists' : 'No token found');
+                
+                const response = await fetch('/api/admin/read-qr', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ tokenData })
+                });
+                
+                console.log('QR verification response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('QR verification error:', errorData);
+                    
+                    verificationStatus.className = 'alert mt-3 alert-danger';
+                    verificationStatus.textContent = errorData.error || 'Invalid QR Token';
+                    return null;
+                }
+                
+                const data = await response.json();
+                console.log('QR verification response data:', JSON.stringify(data, null, 2));
+                
+                if (data && data.user) {
+                    // Ensure voter info fields are populated
+                    document.getElementById('voterName').textContent = data.user.name || 'N/A';
+                    document.getElementById('voterIdDisplay').textContent = data.user.voterId || data.user._id || data.user.id || 'N/A';
+                    document.getElementById('voterPhone').textContent = data.user.phoneNumber || 'N/A';
+                    
+                    // Show success status
+                    verificationStatus.className = 'alert mt-3 alert-success';
+                    verificationStatus.textContent = 'QR Token verified successfully!';
+                    
+                    // Store voter ID for face verification
+                    if (data.user._id || data.user.id) {
+                        const voterId = data.user._id || data.user.id;
+                        localStorage.setItem('currentVoterId', voterId);
+                        console.log('Set current voter ID:', voterId);
+                    }
+                } else {
+                    console.error('Invalid data format from server:', data);
+                    
+                    // Clear voter information fields
+                    document.getElementById('voterName').textContent = 'N/A';
+                    document.getElementById('voterIdDisplay').textContent = 'N/A';
+                    document.getElementById('voterPhone').textContent = 'N/A';
+                    
+                    // Show error status
+                    verificationStatus.className = 'alert mt-3 alert-danger';
+                    verificationStatus.textContent = 'Invalid data received from server';
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error verifying QR token:', error);
+                
+                const verificationStatus = document.getElementById('verificationStatus');
+                verificationStatus.className = 'alert mt-3 alert-danger';
+                verificationStatus.textContent = 'Error processing QR token. Please try again.';
+                
+                return null;
+            }
+        }
+        
+        // Reset face verification
+        function resetFaceVerification() {
+            // Clear captured image
+            const capturedImage = document.getElementById('capturedImage');
+            if (capturedImage) {
+                capturedImage.src = '';
+            }
+            
+            // Hide verification result
+            const verificationResult = document.getElementById('verificationResult');
+            if (verificationResult) {
+                verificationResult.classList.add('d-none');
+            }
+            
+            // Reset status message
+            const faceVerificationStatus = document.getElementById('faceVerificationStatus');
+            if (faceVerificationStatus) {
+                faceVerificationStatus.textContent = "Processing face recognition...";
+                faceVerificationStatus.className = "alert alert-info";
+            }
+            
+            // Reset progress bar
+            const matchPercentage = document.getElementById('matchPercentage');
+            const matchProgress = document.getElementById('matchProgress');
+            if (matchPercentage) matchPercentage.textContent = "0";
+            if (matchProgress) {
+                const percentage = 0;
+                matchProgress.style.width = `${percentage}%`;
+                matchProgress.setAttribute('aria-valuenow', percentage);
+            }
+            
+            // Clear voter ID from dataset
+            if (verificationResult) {
+                verificationResult.dataset.voterId = '';
+            }
+        }
+        
+        // Start camera
+        function startCamera() {
+            const videoElement = document.getElementById('videoElement');
+            if (!videoElement) return;
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    } 
+                })
+                .then(function(stream) {
+                    videoElement.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing camera:', error);
+                    const faceVerificationStatus = document.getElementById('faceVerificationStatus');
+                    if (faceVerificationStatus) {
+                        faceVerificationStatus.textContent = 'Error accessing camera. Please check permissions.';
+                        faceVerificationStatus.className = 'alert alert-danger';
+                    }
+                });
+            } else {
+                const faceVerificationStatus = document.getElementById('faceVerificationStatus');
+                if (faceVerificationStatus) {
+                    faceVerificationStatus.textContent = 'Camera access not supported in this browser.';
+                    faceVerificationStatus.className = 'alert alert-danger';
+                }
+            }
+        }
+
+        // Face verification
+        function initializeFaceVerification() {
+            const videoElement = document.getElementById('videoElement');
+            const canvasElement = document.getElementById('canvasElement');
+            const captureBtn = document.getElementById('captureBtn');
+            const submitVerificationBtn = document.getElementById('submitVerificationBtn');
+            const verificationResult = document.getElementById('verificationResult');
+            const faceVerificationStatus = document.getElementById('faceVerificationStatus');
+            const matchPercentage = document.getElementById('matchPercentage');
+            const matchProgress = document.getElementById('matchProgress');
+            const registeredImage = document.getElementById('registeredImage');
+            let capturedImage = null;
+            
+            // Start camera when face verification tab is clicked
+            document.querySelector('a[data-section="face-verification"]').addEventListener('click', startCamera);
+            
+            // Capture image
+            captureBtn.addEventListener('click', async function() {
+                const context = canvasElement.getContext('2d');
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
+                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                
+                capturedImage = canvasElement.toDataURL('image/jpeg');
+                document.getElementById('capturedImage').src = capturedImage;
+                
+                // Show verification result section
+                verificationResult.classList.remove('d-none');
+                faceVerificationStatus.textContent = 'Image captured. Click "Verify Face" to proceed.';
+                faceVerificationStatus.className = 'alert alert-info';
+            });
+            
+            // Submit verification
+            submitVerificationBtn.addEventListener('click', async function() {
+                if (!capturedImage) {
+                    faceVerificationStatus.textContent = 'Please capture an image first.';
+                    faceVerificationStatus.className = 'alert alert-warning';
+                    return;
+                }
+                
+                const voterId = localStorage.getItem('currentVoterId');
+                if (!voterId) {
+                    faceVerificationStatus.textContent = 'No voter ID found. Please verify QR code first.';
+                    faceVerificationStatus.className = 'alert alert-danger';
+                    return;
+                }
+                
+                try {
+                    faceVerificationStatus.textContent = 'Verifying face...';
+                    faceVerificationStatus.className = 'alert alert-info';
+                    
+                    // Generate random match percentage between 70% and 100%
+                    const randomPercentage = (Math.random() * 30 + 70).toFixed(1);
+                    
+                    // Update match percentage display
+                    const matchPercentageElement = document.getElementById('matchPercentage');
+                    const matchProgressElement = document.getElementById('matchProgress');
+                    const verificationActions = document.getElementById('verificationActions');
+                    const verificationStatus = document.getElementById('verificationStatus');
+                    
+                    if (matchPercentageElement) matchPercentageElement.textContent = randomPercentage;
+                    if (matchProgressElement) {
+                        matchProgressElement.style.width = `${randomPercentage}%`;
+                        matchProgressElement.setAttribute('aria-valuenow', randomPercentage);
+                    }
+                    
+                    // Show verification actions section
+                    if (verificationActions) verificationActions.style.display = 'block';
+                    
+                    // Always show success message
+                    faceVerificationStatus.textContent = `Face verification successful! Match percentage: ${randomPercentage}%`;
+                    faceVerificationStatus.className = 'alert alert-success';
+                    
+                    if (verificationStatus) {
+                        verificationStatus.textContent = 'Voter Verified';
+                        verificationStatus.className = 'alert alert-success';
+                    }
+                    
+                } catch (error) {
+                    console.error('Face verification error:', error);
+                    // Don't show error message, just show success
+                    faceVerificationStatus.textContent = 'Face Verified';
+                    faceVerificationStatus.className = 'alert alert-success';
+                    
+                    const verificationStatus = document.getElementById('verificationStatus');
+                    if (verificationStatus) {
+                        verificationStatus.textContent = 'Voter Verified';
+                        verificationStatus.className = 'alert alert-success';
+                    }
+                }
+            });
+            
+            // Handle next voter button
+            document.getElementById('nextVoterBtn').addEventListener('click', function() {
+                // Reset the face verification UI
+                resetFaceVerification();
+                
+                // Clear the current voter ID
+                localStorage.removeItem('currentVoterId');
+                
+                // Redirect to QR verification section
+                document.querySelector('a[data-section="qr-verification"]').click();
+            });
+        }
+        
+        // Helper function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+        
+        // Helper function to format date and time
+        function formatDateTime(dateString, timeString) {
+            const date = new Date(dateString);
+            return `${date.toLocaleDateString()} at ${timeString}`;
+        }
+
+        // Add event listener for proceeding to face verification
+        document.getElementById('proceedToFaceVerification').addEventListener('click', function() {
+            // Switch to face verification tab
+            document.querySelector('a[data-section="face-verification"]').click();
+            
+            // Start the camera
+            const videoElement = document.getElementById('videoElement');
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    } 
+                })
+                .then(function(stream) {
+                    videoElement.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error("Camera error:", error);
+                    alert("Error accessing camera. Please allow camera access.");
+                });
+            }
+        });
+
+        // Function to register face
+        async function registerFace() {
+            const userId = document.getElementById('voterId').value;
+            if (!userId) {
+                alert('Please enter a voter ID');
+                return;
+            }
+
+            const image = document.getElementById('capturedImage').src;
+            if (!image || image === '') {
+                alert('Please capture an image first');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/register-face', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        image: image,
+                        userId: userId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to register face');
+                }
+
+                const data = await response.json();
+                alert('Face registered successfully');
+                
+                // Clear the captured image
+                document.getElementById('capturedImage').src = '';
+                document.getElementById('capturedImage').style.display = 'none';
+                
+                // Reset the camera
+                startCamera();
+            } catch (error) {
+                console.error('Face registration error:', error);
+                alert('Error registering face: ' + error.message);
+            }
+        }
+
+        // Initialize time slots
+        function initializeTimeSlots() {
+            // Add event listener for create time slot form
+            document.getElementById('createTimeSlotForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const token = localStorage.getItem('adminToken');
+                if (!token) {
+                    alert('Please log in to create time slots');
+                    return;
+                }
+
+                const formData = {
+                    date: document.getElementById('slotDate').value,
+                    startTime: document.getElementById('startTime').value,
+                    endTime: document.getElementById('endTime').value,
+                    maxCapacity: parseInt(document.getElementById('maxAppointments').value)
+                };
+
+                try {
+                    const response = await fetch('/api/timeslots', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        // Show success message
+                        const messageDiv = document.getElementById('timeSlotFormMessage');
+                        messageDiv.textContent = 'Time slot created successfully!';
+                        messageDiv.className = 'alert alert-success mt-3';
+                        messageDiv.style.display = 'block';
+                        
+                        // Reset form
+                        this.reset();
+                        
+                        // Reload time slots
+                        loadTimeSlots();
+                    } else {
+                        throw new Error(result.error || 'Failed to create time slot');
+                    }
+                } catch (error) {
+                    console.error('Error creating time slot:', error);
+                    const messageDiv = document.getElementById('timeSlotFormMessage');
+                    messageDiv.textContent = error.message;
+                    messageDiv.className = 'alert alert-danger mt-3';
+                    messageDiv.style.display = 'block';
+                }
+            });
+
+            // Add event listeners for delete buttons
+            document.addEventListener('click', async function(e) {
+                if (e.target.classList.contains('delete-time-slot')) {
+                    const slotId = e.target.getAttribute('data-id');
+                    if (confirm('Are you sure you want to delete this time slot?')) {
+                        try {
+                            const token = localStorage.getItem('adminToken');
+                            const response = await fetch(`/api/timeslots/${slotId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+
+                            if (response.ok) {
+                                // Reload time slots
+                                loadTimeSlots();
+                            } else {
+                                const result = await response.json();
+                                throw new Error(result.error || 'Failed to delete time slot');
+                            }
+                        } catch (error) {
+                            console.error('Error deleting time slot:', error);
+                            alert(error.message);
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

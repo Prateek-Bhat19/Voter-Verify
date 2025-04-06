@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  face-verification:
+    build: .
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./deepface_weights:/app/deepface_weights
+      - ./registered_faces:/app/registered_faces
+      - ./temp:/app/temp
+    environment:
+      - HOST=0.0.0.0
+      - PORT=5001
+      - DEBUG=False
+      - BACKEND_URL=http://localhost:3000
+      - BACKEND_API_KEY=${BACKEND_API_KEY}
+      - DEEPFACE_HOME=/app/deepface_weights
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:5001
+    depends_on:
+      - face-verification
+    restart: unless-stopped

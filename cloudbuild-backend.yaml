@@ -1,0 +1,12 @@
+steps:
+  # Build and push the backend service
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/absolute-nexus-455918-j8/backend:v6', '-f', 'Dockerfile.backend', '.']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/absolute-nexus-455918-j8/backend:v6']
+
+images:
+  - 'gcr.io/absolute-nexus-455918-j8/backend:v6'
+
+timeout: '1800s' 

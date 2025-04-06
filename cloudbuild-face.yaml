@@ -1,0 +1,12 @@
+steps:
+  # Build and push the face verification service
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/absolute-nexus-455918-j8/face-verification:v2', '-f', 'Dockerfile', '.']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/absolute-nexus-455918-j8/face-verification:v2']
+
+images:
+  - 'gcr.io/absolute-nexus-455918-j8/face-verification:v2'
+
+timeout: '3600s'  # Increase timeout to 1 hour for building the face verification image

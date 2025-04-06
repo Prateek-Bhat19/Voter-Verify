@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer components {
+    .header-text {
+        @apply text-slate-200 font-light 
+         text-xl hover:text-white relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full;
+    }
+    .mobile-header {
+        @apply block py-2 text-gray-600 hover:text-gray-900 border-b border-gray-100
+    }
+}
