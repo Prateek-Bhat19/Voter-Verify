@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .chat-container {
+      border: 1px solid #ccc;
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+    .user-message {
+      background-color: #e6f7ff;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      max-width: 80%;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    .system-message {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      max-width: 80%;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chatbot Test</h1>
+  
+  <div class="chat-container" id="chat-container">
+    <div class="system-message">Hello! I'm your voting assistant. How can I help you with the e-voting process today?</div>
+  </div>
+  
+  <div class="input-area">
+    <input type="text" id="message-input" placeholder="Type your message...">
+    <button id="send-button">Send</button>
+  </div>
+  
+  <h3>Debug Information:</h3>
+  <pre id="debug"></pre>
+  
+  <script>
+    // Static responses matching those in chat.html
+    const staticResponses = {
+      'who can be a voter': `
+## Voter Eligibility in India
+
+To be eligible to vote in Indian elections, a person must:
+
+• Be a **citizen of India**
+• Have attained the **age of 18 years** or above on the qualifying date (January 1 of the year of electoral roll revision)
+• Be **ordinarily resident** in the constituency where registered
+• **Not be disqualified** under provisions of the Representation of the People Act, 1950
+
+**Note:** Non-resident Indians (NRIs) who are citizens of India are also eligible to be enrolled as voters.`,
+
+      'what should a voter do on voting day': `
+## Voting Day Procedure in India
+
+On election day, follow these steps:
+
+1. **Check voting time** - Usually 7:00 AM to 6:00 PM
+2. **Carry valid ID proof** - Voter ID card, Aadhaar, passport, etc.
+3. **Locate your polling booth** - Check your voter slip or ECI website
+4. **Stand in queue** - Separate queues for men and women
+5. **Verification process** - Officials will verify your identity
+6. **Indelible ink** - Ink will be applied on your finger
+7. **Electronic voting** - Cast your vote on the EVM by pressing the button
+8. **Check VVPAT** - Verify your vote through the VVPAT machine if available
+
+Remember to maintain peace and follow COVID protocols if applicable.`,
+
+      'how to register': `
+## Voter Registration Process in India
+
+To register as a voter in India:
+
+1. **Online Registration**:
+   • Visit the National Voter Service Portal (NVSP): https://www.nvsp.in/
+   • Fill Form 6 for new registration
+   • Upload required documents (proof of age, residence, photo)
+   • Submit the application
+
+2. **Offline Registration**:
+   • Obtain Form 6 from Electoral Registration Office or download it
+   • Fill the form with required details
+   • Attach necessary documents
+   • Submit to local Electoral Registration Officer
+
+**Required Documents**:
+• Proof of age (Birth certificate, Aadhaar, passport, etc.)
+• Proof of residence (Utility bills, bank statements, etc.)
+• Passport-sized photographs
+
+The Electoral Registration Officer will process your application and inform you about the status.`,
+
+      'voter id card': `
+## Voter ID Card Information
+
+The Voter ID Card, officially known as the **Electors Photo Identity Card (EPIC)**, is a key document for Indian voters.
+
+**Purpose**:
+• Serves as identity proof for voting
+• Acts as official government ID for various purposes
+
+**How to Apply**:
+• Online through National Voter Service Portal (NVSP)
+• Offline at Electoral Registration Office
+• Through BLO (Booth Level Officer) during special drives
+
+**Features**:
+• Contains voter's photo, name, father's/husband's name
+• Has unique EPIC number
+• Shows assembly constituency details
+
+**If Lost/Damaged**:
+Apply for a duplicate through Form 8 at the Electoral Registration Office or online through NVSP.`,
+
+      'election schedule': `
+## Election Schedule in India
+
+Elections in India are conducted by the Election Commission of India (ECI), an autonomous constitutional authority.
+
+**General Election (Lok Sabha)**:
+• Held every 5 years
+• 543 constituencies across India
+• Usually conducted in multiple phases spanning several weeks
+
+**State Assembly Elections**:
+• Held every 5 years for each state
+• Schedule varies by state
+• May coincide with general elections or be held separately
+
+**Current/Upcoming Elections**:
+For the most current election schedules, please visit the official Election Commission of India website at https://eci.gov.in/
+
+The Election Commission announces the detailed schedule including nomination dates, polling dates, and counting dates a few weeks before the elections.`
+    };
+    
+    // Keywords for matching
+    const keywords = ['voter', 'election', 'voting', 'register', 'id card', 'schedule'];
+    
+    // Default response for voting-related questions that don't match specific patterns
+    const defaultResponse = `
+## Indian Voting System
+
+The Indian electoral system is based on the principle of universal adult suffrage, where every citizen who is 18 years or older has the right to vote, regardless of race, gender, caste, religion, or social status.
+
+**Key Features**:
+• **First-Past-The-Post System**: Candidate with the most votes wins
+• **Electronic Voting Machines (EVMs)**: Used since 2000
+• **VVPAT (Voter Verifiable Paper Audit Trail)**: Provides paper verification
+• **Election Commission of India**: Independent constitutional body that conducts elections
+
+For specific information about voter registration, ID cards, or election schedules, please ask a more specific question.`;
+    
+    // Elements
+    const chatContainer = document.getElementById('chat-container');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const debugOutput = document.getElementById('debug');
+    
+    // Add event listeners
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+    
+    // Function to send a message
+    function sendMessage() {
+      const message = messageInput.value.trim();
+      
+      if (!message) return;
+      
+      // Add user message to chat
+      addMessage(message, 'user');
+      
+      // Clear input
+      messageInput.value = '';
+      
+      // Show "typing" effect
+      setTimeout(() => {
+        // Try both API and fallback
+        tryAPIorFallback(message);
+      }, 1000);
+    }
+    
+    // Function to try API or fall back to static responses
+    async function tryAPIorFallback(message) {
+      try {
+        // First try the real API
+        log(`Attempting to call API with message: ${message}`);
+        
+        const response = await fetch('https://voter-verify.onrender.com/api/chatbot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message }),
+          timeout: 5000
+        });
+        
+        const responseData = await response.text();
+        log(`API Response (${response.status}): ${responseData}`);
+        
+        if (response.ok) {
+          try {
+            const data = JSON.parse(responseData);
+            if (data.reply) {
+              addMessage(data.reply, 'system');
+              return;
+            }
+          } catch (e) {
+            log(`Error parsing JSON: ${e.message}`);
+          }
+        }
+        
+        // If API fails, use fallback
+        useStaticResponse(message);
+      } catch (error) {
+        log(`Error calling API: ${error.message}`);
+        useStaticResponse(message);
+      }
+    }
+    
+    // Function to use static responses
+    function useStaticResponse(message) {
+      log('Using static response system');
+      
+      const lowerMessage = message.toLowerCase();
+      
+      // Check for exact matches first
+      for (const [key, response] of Object.entries(staticResponses)) {
+        if (lowerMessage.includes(key) || key.includes(lowerMessage)) {
+          addMessage(response, 'system');
+          return;
+        }
+      }
+      
+      // Check for keywords
+      for (const keyword of keywords) {
+        if (lowerMessage.includes(keyword)) {
+          addMessage(defaultResponse, 'system');
+          return;
+        }
+      }
+      
+      // If no keywords match, provide a generic response
+      addMessage('I can only answer questions about voting in India. Please ask me about voter registration, ID cards, or election schedules.', 'system');
+    }
+    
+    // Function to add a message to the chat
+    function addMessage(text, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `${sender}-message`;
+      messageDiv.innerHTML = text;
+      chatContainer.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Function to log debug information
+    function log(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      debugOutput.textContent += `[${timestamp}] ${message}\n`;
+      debugOutput.scrollTop = debugOutput.scrollHeight;
+    }
+    
+    // Initialize
+    log('Chatbot test initialized');
+  </script>
+</body>
+</html> 
