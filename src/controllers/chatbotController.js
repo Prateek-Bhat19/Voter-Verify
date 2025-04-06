@@ -312,7 +312,15 @@ exports.getChatbotResponse = async (req, res) => {
                 return handleStaticResponse(req, res);
             }
 
-            const reply = response.data.candidates[0].content.parts[0].text;
+            let reply = response.data.candidates[0].content.parts[0].text;
+            
+            // Clean up the response to remove any prompt text
+            reply = reply.replace(prompt, '').trim();
+            
+            // If the response is empty after cleaning, use static response
+            if (!reply) {
+                return handleStaticResponse(req, res);
+            }
 
             // Save the conversation
             await saveConversation(userId, chatRoomId, message, reply);
